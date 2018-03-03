@@ -20,18 +20,18 @@ def calculate_cv(X, y):
     nb = MultinomialNB()
     vc = VotingClassifier([('lm', lm), ('svm', svm), ('nb', nb)])
 
-    for c in cfg.cat:
-        y_adj = np.array(y == c)
-        results['lr'].append((cross_val_score(lm, X, y_adj, cv=10, scoring='accuracy').mean(), c))
-        results['svm'].append((cross_val_score(svm, X, y_adj, cv=10, scoring='accuracy').mean(), c))
-        results['nb'].append((cross_val_score(nb, X, y_adj, cv=10, scoring='accuracy').mean(), c))
-        results['combined'].append((cross_val_score(vc, X, y_adj, cv=10, scoring='accuracy').mean(), c))
+    for category in cfg.categories:
+        y_adj = np.array(y == category)
+        results['lr'].append((cross_val_score(lm, X, y_adj, cv=10, scoring='accuracy').mean(), category))
+        results['svm'].append((cross_val_score(svm, X, y_adj, cv=10, scoring='accuracy').mean(), category))
+        results['nb'].append((cross_val_score(nb, X, y_adj, cv=10, scoring='accuracy').mean(), category))
+        results['combined'].append((cross_val_score(vc, X, y_adj, cv=10, scoring='accuracy').mean(), category))
     return results
 
 
 def get_lr(x, y):
     models = []
-    for c in cfg.cat:
+    for c in cfg.categories:
         y_adj = np.array(y == c)
         lm = LogisticRegression()
         lm_f = lm.fit(x, y_adj)

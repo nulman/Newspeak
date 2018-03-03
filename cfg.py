@@ -1,4 +1,6 @@
-cat = ['low','neutral','high']
+# Configuration
+
+categories = ['low', 'neutral', 'high']
 
 n_topics = 10
 

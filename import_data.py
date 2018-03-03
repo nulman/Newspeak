@@ -4,11 +4,11 @@ import cfg as cfg
 
 def cat_y(y):
     if y <= 2.0:
-        return cfg.cat[0]
+        return cfg.categories[0]
     elif y >= 4.0:
-        return cfg.cat[2]
+        return cfg.categories[2]
     else:
-        return cfg.cat[1]
+        return cfg.categories[1]
 
 
 def get_reviews(path, n_samples):

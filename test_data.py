@@ -8,4 +8,4 @@ def test_review(common, text):
     print('Review text: "{R}"\n'.format(R=test_str[0]))
     print('Model Predction')
     for m in range(0, 3):
-        print('Model ({M}): {P:.1%}'.format(M=cfg.cat[m], P=common.lr_m[m].predict_proba(test_new)[0][1]))
+        print('Model ({M}): {P:.1%}'.format(M=cfg.categories[m], P=common.lr_m[m].predict_proba(test_new)[0][1]))
