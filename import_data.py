@@ -1,6 +1,6 @@
 import pandas as pd
-import cfg as cfg
-
+import cfg
+import json
 
 def cat_y(y):
     if y <= 2.0:
@@ -15,9 +15,10 @@ def get_reviews(path, n_samples):
     dt = {}
     i = 0
     with open(path) as f:
-        for d in f.readlines():
-            dt[i] = eval(d)
+        for d in f:
+            dt[i] = json.loads(d)
             i += 1
+
     df = pd.DataFrame.from_dict(dt, orient='index')[['reviewText', 'overall']]
     df = df[df['reviewText'].apply(lambda x: len(x.split()) >= 45)]
     df['bucket'] = df['overall'].apply(cat_y)
