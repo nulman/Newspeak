@@ -11,21 +11,21 @@ import cfg
 def calculate_cv(X, y):
     results = {
         'lr': [],
-        'svm': [],
-        'nb': [],
-        'combined': []
+        # 'svm': [],
+        # 'nb': [],
+        # 'combined': []
     }
     lm = LogisticRegression()
-    svm = LinearSVC()
-    nb = MultinomialNB()
-    vc = VotingClassifier([('lm', lm), ('svm', svm), ('nb', nb)])
+    # svm = LinearSVC()
+    # nb = MultinomialNB()
+    # vc = VotingClassifier([('lm', lm), ('svm', svm), ('nb', nb)])
 
     for category in cfg.categories:
         y_adj = np.array(y == category)
         results['lr'].append((cross_val_score(lm, X, y_adj, cv=10, scoring='accuracy').mean(), category))
-        results['svm'].append((cross_val_score(svm, X, y_adj, cv=10, scoring='accuracy').mean(), category))
-        results['nb'].append((cross_val_score(nb, X, y_adj, cv=10, scoring='accuracy').mean(), category))
-        results['combined'].append((cross_val_score(vc, X, y_adj, cv=10, scoring='accuracy').mean(), category))
+        # results['svm'].append((cross_val_score(svm, X, y_adj, cv=10, scoring='accuracy').mean(), category))
+        # results['nb'].append((cross_val_score(nb, X, y_adj, cv=10, scoring='accuracy').mean(), category))
+        # results['combined'].append((cross_val_score(vc, X, y_adj, cv=10, scoring='accuracy').mean(), category))
     return results
 
 

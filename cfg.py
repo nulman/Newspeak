@@ -1,6 +1,6 @@
 # Configuration
 
-categories = ['low', 'neutral', 'high']
+categories = ['lowest','low', 'neutral', 'high', 'highest']
 
 n_topics = 10
 
