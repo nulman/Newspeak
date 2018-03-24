@@ -1,5 +1,7 @@
 from string import punctuation
 
+import numpy as np
+import nltk
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import RegexpTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
@@ -31,7 +33,7 @@ def true_casing(tokens):
 def tokenize(text):
     # sentences = nltk.sent_tokenize(text)
     # for sentence in sentences:
-    #     words = nltk.word_tokenize(sentence)
+    #     tokens = nltk.word_tokenize(sentence)
     #     tagged_words = nltk.pos_tag(words)
     #     ne_tagged_words = nltk.ne_chunk(tagged_words)
     tokens = tokenizer.tokenize(text)
@@ -49,5 +51,7 @@ def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
         m = CountVectorizer(max_df=max_df, min_df=min_df, stop_words='english', ngram_range=ngram_range,
                             tokenizer=tokenize)
 
-    d = m.fit_transform(data.values.astype('U'))
+    data = data.values.astype('str')
+    data = np.core.defchararray.replace(data, '#$%', ' ')
+    d = m.fit_transform(data)
     return m, d

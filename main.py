@@ -9,11 +9,10 @@ from test_data import test_review
 from classifier import classifier
 import cfg
 
-
 # Import review data
-data = get_reviews('data\\amazon_reviews_us_Watches_v1_00.tsv',10000)
+data = get_reviews('data\\amazon_reviews_us_Watches_v1_00.tsv', 10000)
 pd.set_option('display.max_colwidth', -1)
-data.sample(cfg.categories.__len__())
+# data.sample(cfg.categories.__len__())
 
 # Init common class
 cm = common(data)
@@ -22,7 +21,8 @@ cm = common(data)
 # tf_m, tf_d = get_tf(data['reviewText'], use_idf=False, max_df=0.90, min_df=10)
 
 # We use individual words, bigrams and trigrams
-tfidf_m, tfidf_d = get_tf(data['review_body'], use_idf=True, max_df=0.90, min_df=10, ngram_range=(1, 3))
+tfidf_m, tfidf_d = get_tf(data['review_body'] + data['review_headline'], use_idf=True, max_df=cfg.max_df,
+                          min_df=cfg.min_df, ngram_range=cfg.ngram_range)
 
 # Propogate properties in common class
 # cm.tf_m = tf_m
@@ -41,7 +41,10 @@ classifier.classify()
 
 # Plot results
 classifier.plot_results()
-#
-# # Test data
-test_review(cm, 'I bought these watch last week. I immediately returned these when they arrived damaged.')
-test_review(cm, 'This is the best clock I have ever owned! I am glad I bought it.')
+
+first_star = data[data.star_rating == 1].iloc[0]
+five_star = data[data.star_rating == 5].iloc[0]
+
+# Test data
+test_review(cm, first_star['review_headline'] + ' ' + first_star['review_body'])
+test_review(cm, five_star['review_headline'] + ' ' + five_star['review_body'])
