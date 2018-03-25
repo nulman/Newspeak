@@ -1,4 +1,5 @@
 from string import punctuation
+import cfg
 
 import numpy as np
 import nltk
@@ -43,9 +44,9 @@ def tokenize(text):
 
 
 def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
-    words = build_vocabulary()
+    words = np.unique(build_vocabulary() + cfg.FUNCTION_WORDS + list(punctuation)).tolist()
     if use_idf:
-        m = TfidfVectorizer(max_df=max_df, min_df=min_df, ngram_range=ngram_range, vocabulary=words + list(punctuation),
+        m = TfidfVectorizer(max_df=max_df, min_df=min_df, ngram_range=ngram_range, vocabulary= words,
                             tokenizer=tokenize)
     else:
         m = CountVectorizer(max_df=max_df, min_df=min_df, stop_words='english', ngram_range=ngram_range,
