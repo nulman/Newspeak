@@ -10,7 +10,7 @@ from classifier import classifier
 import cfg
 
 # Import review data
-data = get_reviews('data\\amazon_reviews_us_Watches_v1_00.tsv', 10000)
+data = get_reviews('data\\amazon_reviews_us_Watches_v1_00.tsv', n=10000)#can do frac=0.x to get a fractional sample
 pd.set_option('display.max_colwidth', -1)
 # data.sample(cfg.categories.__len__())
 

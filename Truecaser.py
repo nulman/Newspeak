@@ -28,8 +28,11 @@ class Caser(object):
         #Get Unigram Score
         nominator = self.uniDist[possibleToken]+pseudoCount
         denominator = 0
-        for alternativeToken in self.wordCasingLookup[possibleToken.lower()]:
-            denominator += self.uniDist[alternativeToken]+pseudoCount
+        try:
+            for alternativeToken in self.wordCasingLookup[possibleToken.lower()]:
+                denominator += self.uniDist[alternativeToken]+pseudoCount
+        except KeyError:
+            return 0.0
 
         unigramScore = nominator / denominator
 
@@ -119,4 +122,3 @@ class Caser(object):
                         tokensTrueCase.append(token)
 
         return tokensTrueCase
-    
