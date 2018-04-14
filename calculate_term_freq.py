@@ -6,11 +6,19 @@ import nltk
 from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import RegexpTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from nltk import pos_tag
 
 from Truecaser import Caser
 
 stemmer = SnowballStemmer("english")
 tokenizer = RegexpTokenizer("[\w']+")
+possible_tags = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 'NNPS',
+                     'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG',
+                     'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB']
+
+caser = None
+# uncomment the following line to skip casing
+#caser = type('',(),{'getTrueCase': lambda x: x})
 
 
 def build_vocabulary():
@@ -19,7 +27,7 @@ def build_vocabulary():
     for txt in neg_pos_words:
         with open(txt) as f:
             content = f.readlines()
-        content = [x.strip() for x in content]
+        content = ['_'.join([x.strip(), tag]) for x in content for tag in possible_tags]
         vocabulary.update(content)
     return list(vocabulary)
 
@@ -32,19 +40,27 @@ def true_casing(tokens):
 
 
 def tokenize(text):
+    global caser
+    if caser is None:
+        print('loading caser...', end='')
+        caser = Caser()
+        print('done.')
     # sentences = nltk.sent_tokenize(text)
     # for sentence in sentences:
     #     tokens = nltk.word_tokenize(sentence)
     #     tagged_words = nltk.pos_tag(words)
     #     ne_tagged_words = nltk.ne_chunk(tagged_words)
     tokens = tokenizer.tokenize(text)
-    # tokens = pos_tag(tokens)
+    cased_token = caser.getTrueCase(tokens)
+    cased_token = pos_tag(cased_token)
     # return [stemmer.stem(t) for t in tokens]
-    return [w for w in tokens]
+    return ['_'.join([token, cased[1]]) for token, cased in zip(tokens, cased_token)]
 
 
 def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
-    words = np.unique(build_vocabulary() + cfg.FUNCTION_WORDS + list(punctuation)).tolist()
+    words = np.unique(build_vocabulary() +
+                      ['_'.join([word, tag]) for word in cfg.FUNCTION_WORDS for tag in possible_tags] +
+                      list(punctuation)).tolist()
     if use_idf:
         m = TfidfVectorizer(max_df=max_df, min_df=min_df, ngram_range=ngram_range, vocabulary= words,
                             tokenizer=tokenize)

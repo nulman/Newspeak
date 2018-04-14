@@ -1,9 +1,11 @@
 import pandas as pd
 import cfg
+from numpy import str_
 
 
 def getDF(path):
-    return pd.read_csv(path, sep='\t', header=0, error_bad_lines=False)
+    return pd.read_csv(path, sep='\t', header=0, error_bad_lines=False, converters={'review_headline':str,
+                                                                                    'review_body':str})
 
 
 def cat_y(y):
@@ -19,13 +21,13 @@ def cat_y(y):
         return cfg.categories[4]
 
 
-def get_reviews(path, n_samples):
+def get_reviews(path, **kwargs):
     df = getDF(path)[['review_headline', 'review_body', 'star_rating']]
     # df = pd.DataFrame.from_dict(dt, orient='index')[['review_body', 'star_rating']]
     # df = df[df['review_body'].apply(lambda x: len(x.split()) >= 45)]
     df['bucket'] = df['star_rating'].apply(cat_y)
 
-    df = df.groupby('bucket').apply(lambda x: x.sample(n=n_samples))
+    df = df.groupby('bucket').apply(lambda x: x.sample(**kwargs))
     return df
 
 
