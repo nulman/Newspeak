@@ -1,6 +1,6 @@
 import pandas as pd
+import os
 import cfg
-from numpy import str_
 
 
 def getDF(path):
@@ -21,14 +21,17 @@ def cat_y(y):
         return cfg.categories[4]
 
 
-def get_reviews(path, **kwargs):
-    df = getDF(path)[['review_headline', 'review_body', 'star_rating']]
-    # df = pd.DataFrame.from_dict(dt, orient='index')[['review_body', 'star_rating']]
-    # df = df[df['review_body'].apply(lambda x: len(x.split()) >= 45)]
-    df['bucket'] = df['star_rating'].apply(cat_y)
+def get_reviews(path, use_pickle, **kwargs):
+    if use_pickle and any(fname.endswith('.pkl') for fname in os.listdir('.')):
+        return pd.read_pickle('watches_10000.pkl')
+    else:
+        df = getDF(path)[['review_headline', 'review_body', 'star_rating']]
+        # df = pd.DataFrame.from_dict(dt, orient='index')[['review_body', 'star_rating']]
+        # df = df[df['review_body'].apply(lambda x: len(x.split()) >= 45)]
+        df['bucket'] = df['star_rating'].apply(cat_y)
 
-    df = df.groupby('bucket').apply(lambda x: x.sample(**kwargs))
-    return df
+        df = df.groupby('bucket').apply(lambda x: x.sample(**kwargs))
+        return df
 
 
 def get_average_per_user(path):
