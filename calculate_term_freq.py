@@ -7,6 +7,9 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.tokenize import RegexpTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from nltk import pos_tag
+from nltk.tag.perceptron import PerceptronTagger
+tagger = PerceptronTagger()
+
 
 from Truecaser import Caser
 
@@ -18,7 +21,7 @@ possible_tags = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', '
 
 caser = None
 # uncomment the following line to skip casing
-#caser = type('',(),{'getTrueCase': lambda x: x})
+# caser = type('',(),{'getTrueCase': lambda x: x})
 
 
 def build_vocabulary():
@@ -52,7 +55,8 @@ def tokenize(text):
     #     ne_tagged_words = nltk.ne_chunk(tagged_words)
     tokens = tokenizer.tokenize(text)
     cased_token = caser.getTrueCase(tokens)
-    cased_token = pos_tag(cased_token)
+    cased_token = tagger.tag(cased_token)
+    # cased_token = pos_tag(cased_token)
     # return [stemmer.stem(t) for t in tokens]
     return ['_'.join([token, cased[1]]) for token, cased in zip(tokens, cased_token)]
 
