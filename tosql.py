@@ -7,9 +7,10 @@ def tsv_to_sql(path, chunk_size=10000):
     con = sqlite3.connect(path.replace('.tsv', '.db'))
     cur = con.cursor()
     try:
-        cur.execute("CREATE TABLE data (i,marketplace,customer_id,review_id,product_id,product_parent,product_title,"
-                    "product_category,star_rating,helpful_votes,total_votes,vine,verified_purchase,review_headline,review_body,"
-                    "review_date, primary key(i));") # use your column names here
+        cur.execute("CREATE TABLE data (i int,marketplace,customer_id int,review_id,product_id,product_parent int,"
+                    "product_title,product_category,star_rating int,helpful_votes int,total_votes int,"
+                    "vine,verified_purchase,review_headline,review_body,"
+                    "review_date datetime, primary key(i));") # use your column names here
     except sqlite3.OperationalError as e:
         cur.execute("delete from data")
         print(e)
@@ -25,7 +26,7 @@ def tsv_to_sql(path, chunk_size=10000):
         dr = csv.DictReader(fin, delimiter="\t") # comma is default delimiter
         l = []
         i = 0
-        j = 0
+        j = 1
         for row in dr:
             r_data = tuple(row.values())
             if len(r_data) != 15:
