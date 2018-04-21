@@ -430,6 +430,7 @@ FUNCTION_WORDS = [
  ]
 
 categories = ['lowest', 'low', 'neutral', 'high', 'highest']
+categories_int = [1, 2, 3, 4, 5]
 
 n_topics = 10
 

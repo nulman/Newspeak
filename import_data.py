@@ -34,6 +34,7 @@ def get_reviews(path, use_pickle, **kwargs):
         return df
 
 
+
 def get_average_per_user(path):
     df = getDF(path)
     df['freq'] = df.groupby('customer_id')['customer_id'].transform('count')
@@ -42,3 +43,14 @@ def get_average_per_user(path):
 
     new_df = df[['customer_id', 'star_rating', 'avg', 'freq', 'sum']].copy()
     return new_df
+
+
+def chunks(l, n):
+    prev = 1
+    j = 1
+    for i in range(n, l, n):
+        yield [prev, i]
+        prev = i + 1
+        j = i
+    if j != l:
+        yield [prev, l]

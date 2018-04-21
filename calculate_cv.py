@@ -20,7 +20,7 @@ def calculate_cv(X, y):
     # nb = MultinomialNB()
     # vc = VotingClassifier([('lm', lm), ('svm', svm), ('nb', nb)])
 
-    for category in cfg.categories:
+    for category in cfg.categories_int:
         y_adj = np.array(y == category)
         results['lr'].append((cross_val_score(lm, X, y_adj, cv=10, scoring='accuracy').mean(), category))
         # results['svm'].append((cross_val_score(svm, X, y_adj, cv=10, scoring='accuracy').mean(), category))
@@ -31,7 +31,7 @@ def calculate_cv(X, y):
 
 def get_lr(x, y):
     models = []
-    for c in cfg.categories:
+    for c in cfg.categories_int:
         y_adj = np.array(y == c)
         lm = LogisticRegression()
         lm_f = lm.fit(x, y_adj)
