@@ -1,13 +1,15 @@
+import time
+
 import pandas as pd
 
-from analyze_data import analyze_data
+import cfg
 from calculate_term_freq import get_tf
+from classifier import classifier
 from common import common
 from import_data import get_reviews
-from plot_data import plot_coef
 from test_data import test_review
-from classifier import classifier
-import cfg
+
+start = time.time()
 
 # Import review data
 data = get_reviews('data\\amazon_reviews_us_Watches_v1_00.tsv',use_pickle=True, n=10000)#can do frac=0.x to get a fractional sample
@@ -48,3 +50,6 @@ five_star = data[data.star_rating == 5].iloc[0]
 # Test data
 test_review(cm, first_star['review_headline'] + ' ' + first_star['review_body'])
 test_review(cm, five_star['review_headline'] + ' ' + five_star['review_body'])
+
+end = time.time()
+print('\nTiming:', end - start)
