@@ -3,7 +3,7 @@
 import csv, sqlite3
 
 def tsv_to_sql(path, chunk_size=10000):
-    con = sqlite3.connect(r"data\amazon_reviews_us_Watches_v1_00.db")
+    # con = sqlite3.connect(r"data\amazon_reviews_us_Watches_v1_00.db")
     con = sqlite3.connect(path.replace('.tsv', '.db'))
     cur = con.cursor()
     try:
