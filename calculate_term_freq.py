@@ -23,7 +23,7 @@ possible_tags = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', '
 
 caser = None
 # uncomment the following line to skip casing
-caser = type('',(),{'getTrueCase': lambda x: x})
+# caser = type('',(),{'getTrueCase': lambda x: x})
 
 
 def build_vocabulary():

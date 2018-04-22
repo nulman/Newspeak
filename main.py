@@ -9,6 +9,7 @@ from common import common
 from import_data import get_reviews
 from test_data import test_review
 import do_things
+import pickle
 #make sound!
 import winsound
 
@@ -44,7 +45,7 @@ chunk_size = n
 # tfidf_d = tfidf_m.transform(data['text'])
 
 #...and comment these out
-data = pd.read_sql_query(do_things.chunk_query.format(1, n), con)
+data = pd.read_sql_query(do_things.chunk_query.format(1,n), con)
 tfidf_d = tfidf_m.fit_transform(data['text'])
 
 

@@ -19,10 +19,12 @@ class classifier(object):
         cv_scores = calculate_cv(X_test, y_test)
 
         print("Model accuracy predictions\n")
-        for m, s in cv_scores.items():
-            for ss in s:
-                print("{M} model ({R} rating): {S:.1%}".format(M=m.upper(), R=ss[1], S=ss[0]))
-            print()
+        print("(Score): {S:.1%}".format(S=cv_scores))
+        print()
+        # for m, s in cv_scores.items():
+        #     for ss in s:
+        #         print("{M} model ({R} rating): {S:.1%}".format(M=m.upper(), R=ss[1], S=ss[0]))
+        #     print()
 
         # Training the model of choice
         # Assume we are happy with our logistic regression model
