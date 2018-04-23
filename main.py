@@ -26,11 +26,11 @@ tfidf_m = do_things.Vectorizer( use_idf=True, max_df=cfg.max_df,
                           min_df=cfg.min_df, ngram_range=cfg.ngram_range)
 
 con = do_things.get_connection('data\\amazon_reviews_us_Watches_v1_00.db')
-n = do_things.get_table_size(con)
+# n = do_things.get_table_size(con)
 # n = 10000
-data = []
+# data = []
 #change this if its too big for you
-chunk_size = n
+# chunk_size = n
 #uncomment the following...
 # for start, end in do_things.chunks(n, chunk_size):
 #     print('starting: ', start, end)
@@ -45,7 +45,7 @@ chunk_size = n
 # tfidf_d = tfidf_m.transform(data['text'])
 
 #...and comment these out
-data = pd.read_sql_query(do_things.chunk_query.format(1,n), con)
+data = pd.read_sql_query(do_things.chunk_query, con)
 tfidf_d = tfidf_m.fit_transform(data['text'])
 
 
