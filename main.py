@@ -1,17 +1,15 @@
 import time
+# make sound!
+import winsound
 
 import pandas as pd
 
 import cfg
-from calculate_term_freq import get_tf
+import do_things
+import calculate_term_freq as ctf
 from classifier import classifier
 from common import common
-from import_data import get_reviews
 from test_data import test_review
-import do_things
-import pickle
-#make sound!
-import winsound
 
 start = time.time()
 
@@ -73,20 +71,11 @@ cm.tfidf_d = tfidf_d
 
 # Classify data
 classifier = classifier(cm)
-print('classifying...')
+print('classifying...\n')
 classifier.classify()
 
 # Plot results
 # classifier.plot_results()
-
-first_star = data[data.star_rating == 1].iloc[0]
-five_star = data[data.star_rating == 5].iloc[0]
-
-# Test data
-# test_review(cm, first_star['review_headline'] + ' ' + first_star['review_body'])
-# test_review(cm, five_star['review_headline'] + ' ' + five_star['review_body'])
-test_review(cm, first_star['text'])
-test_review(cm, five_star['text'])
 
 end = time.time()
 print('\nTiming:', end - start)

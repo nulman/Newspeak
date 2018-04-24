@@ -4,8 +4,8 @@ import cfg
 
 
 def getDF(path):
-    return pd.read_csv(path, sep='\t', header=0, error_bad_lines=False, converters={'review_headline':str,
-                                                                                    'review_body':str})
+    return pd.read_csv(path, sep='\t', header=0, error_bad_lines=False, converters={'review_headline': str,
+                                                                                    'review_body': str})
 
 
 def cat_y(y):
@@ -32,7 +32,6 @@ def get_reviews(path, use_pickle, **kwargs):
 
         df = df.groupby('bucket').apply(lambda x: x.sample(**kwargs))
         return df
-
 
 
 def get_average_per_user(path):

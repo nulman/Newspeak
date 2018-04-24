@@ -1,27 +1,24 @@
 from string import punctuation
-import cfg
 
-import numpy as np
 import nltk
-from nltk.stem.snowball import SnowballStemmer
+import numpy as np
+from nltk.tag.perceptron import PerceptronTagger
 from nltk.tokenize import RegexpTokenizer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from online_vectorizers import OnlineTfidfVectorizer
-from nltk import pos_tag
-from nltk.tag.perceptron import PerceptronTagger
+
+import cfg
 from Truecaser import Caser
 
 tagger = PerceptronTagger()
 
-
-
-stemmer = SnowballStemmer("english")
 tokenizer = RegexpTokenizer("[\w']+")
 possible_tags = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 'NNPS',
                  'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG',
                  'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB']
 
 caser = None
+
+
 # uncomment the following line to skip casing
 # caser = type('',(),{'getTrueCase': lambda x: x})
 
@@ -32,7 +29,8 @@ def build_vocabulary():
     for txt in neg_pos_words:
         with open(txt) as f:
             content = f.readlines()
-        content = ['_'.join([x.strip(), tag]) for x in content for tag in possible_tags]
+        # content = ['_'.join([x.strip(), tag]) for x in content for tag in possible_tags]
+        content = [x.strip() for x in content]
         vocabulary.update(content)
     return list(vocabulary)
 
@@ -50,36 +48,48 @@ def tokenize(text):
         print('loading caser...', end='')
         caser = Caser()
         print('done.')
-    # sentences = nltk.sent_tokenize(text)
-    # for sentence in sentences:
-    #     tokens = nltk.word_tokenize(sentence)
+    sentences = nltk.sent_tokenize(text)
+    tokens = []
+    for sentence in sentences:
+        tokens = nltk.word_tokenize(sentence)
     #     tagged_words = nltk.pos_tag(words)
     #     ne_tagged_words = nltk.ne_chunk(tagged_words)
-    tokens = tokenizer.tokenize(text)
-    cased_token = caser.getTrueCase(tokens)
-    cased_token = tagger.tag(cased_token)
+    # tokens = tokenizer.tokenize(text)
+    # cased_token = caser.getTrueCase(tokens)
+    # cased_token = tagger.tag(cased_token)
     # cased_token = pos_tag(cased_token)
     # return [stemmer.stem(t) for t in tokens]
-    return ['_'.join([token, cased[1]]) for token, cased in zip(tokens, cased_token)]
+    return [t for t in tokens]
+    # return ['_'.join([token, cased[1]]) for token, cased in zip(tokens, cased_token)]
 
-vocabulary = np.unique(build_vocabulary() +
-                      ['_'.join([word, tag]) for word in cfg.FUNCTION_WORDS for tag in possible_tags] +
-                      list(punctuation)).tolist()
 
-def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1), partial_refit=False):
+# Neg\Pos + Function words + Punctuation
+# vocabulary = np.unique(build_vocabulary() + cfg.FUNCTION_WORDS  +
+#                        list(punctuation)).tolist()
 
+# Experiment #1 Only Negative and Positive words
+vocabulary = build_vocabulary()
+
+
+# Experiment #2 Only Top 10000 frequent words
+# vocabulary = top_frequent_words_in_text()
+
+def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
     if use_idf:
-        m = OnlineTfidfVectorizer(max_df=max_df, min_df=min_df, ngram_range=ngram_range,
-                                  vocabulary=vocabulary, strip_accents='ascii', encoding='utf-8',
-                                  tokenizer=tokenize)
+        m = TfidfVectorizer(max_df=max_df, min_df=min_df, ngram_range=ngram_range,
+                            vocabulary=vocabulary, strip_accents='ascii', encoding='utf-8',
+                            tokenizer=tokenize)
     else:
         m = CountVectorizer(max_df=max_df, min_df=min_df, stop_words='english', ngram_range=ngram_range,
                             tokenizer=tokenize)
 
     # data = data.values.astype('str')
     # data = np.core.defchararray.replace(data, '#$%', ' ')
-    if partial_refit:
-        d = m.partial_refit(data)
-    else:
-        d = m.fit_transform(data)
+    d = m.fit_transform(data)
     return m, d
+
+
+def top_frequent_words_in_text(allWords, n):
+    stopwords = nltk.corpus.stopwords.words('english')
+    allWordExceptStopDist = nltk.FreqDist(w.lower() for w in allWords if w not in stopwords)
+    return allWordExceptStopDist.most_common(n)
