@@ -429,7 +429,8 @@ FUNCTION_WORDS = [
  'yourselves'
  ]
 
-categories = ['lowest', 'low', 'neutral', 'high', 'highest']
+categories = ['1', '2', '3', '4', '5']
+categories_int = [1, 2, 3, 4, 5]
 
 n_topics = 10
 

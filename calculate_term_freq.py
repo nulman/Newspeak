@@ -9,10 +9,11 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from online_vectorizers import OnlineTfidfVectorizer
 from nltk import pos_tag
 from nltk.tag.perceptron import PerceptronTagger
+from Truecaser import Caser
 
 tagger = PerceptronTagger()
 
-from Truecaser import Caser
+
 
 stemmer = SnowballStemmer("english")
 tokenizer = RegexpTokenizer("[\w']+")
@@ -21,8 +22,6 @@ possible_tags = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', '
                  'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB']
 
 caser = None
-
-
 # uncomment the following line to skip casing
 # caser = type('',(),{'getTrueCase': lambda x: x})
 
@@ -63,14 +62,15 @@ def tokenize(text):
     # return [stemmer.stem(t) for t in tokens]
     return ['_'.join([token, cased[1]]) for token, cased in zip(tokens, cased_token)]
 
-
-def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1), partial_refit=False):
-    words = np.unique(build_vocabulary() +
+vocabulary = np.unique(build_vocabulary() +
                       ['_'.join([word, tag]) for word in cfg.FUNCTION_WORDS for tag in possible_tags] +
                       list(punctuation)).tolist()
+
+def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1), partial_refit=False):
+
     if use_idf:
         m = OnlineTfidfVectorizer(max_df=max_df, min_df=min_df, ngram_range=ngram_range,
-                                  vocabulary=words, strip_accents='ascii', encoding='utf-8',
+                                  vocabulary=vocabulary, strip_accents='ascii', encoding='utf-8',
                                   tokenizer=tokenize)
     else:
         m = CountVectorizer(max_df=max_df, min_df=min_df, stop_words='english', ngram_range=ngram_range,
