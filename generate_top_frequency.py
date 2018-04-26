@@ -27,6 +27,7 @@ def top_frequent_words_in_text(database_path, n):
 
 if __name__ == '__main__':
     top_words = top_frequent_words_in_text(r'data\\amazon_reviews_us_Watches_v1_00.db', 10000)
+    top_words = [a for a, b in top_words]
 
     output = open(f'top {10000} words.pkl', 'wb')
     pickle.dump(top_words, output)
