@@ -442,8 +442,8 @@ min_df = 10
 
 ngram_range = (1, 3)
 
-train_size = 0.8
+train_size = 0.9
 
-test_size = 0.2
+test_size = 0.1
 
 

@@ -1,8 +1,9 @@
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import ShuffleSplit
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_score
 
 import cfg
-from calculate_cv import calculate_cv
-# from plot_data import plot_coef
 
 
 class classifier(object):
@@ -12,12 +13,19 @@ class classifier(object):
 
     def classify(self):
         # Prepare data for rating prediction
-        X_train, X_test, y_train, y_test = train_test_split(self._common.tfidf_d, self._common.data['star_rating'],
-                                                            train_size=cfg.train_size,
-                                                            test_size=cfg.test_size)
-        # Calculate model accuracies
-        cv_scores = calculate_cv(X_test, y_test)
+        # X_train, X_test, y_train, y_test = train_test_split(self._common.tfidf_d, self._common.data['star_rating'],
+        #                                                     train_size=cfg.train_size,
+        #                                                     test_size=cfg.test_size)
 
+        cv = ShuffleSplit(n_splits=10, train_size=cfg.train_size, test_size=cfg.test_size, random_state=42)
+
+        estimator = LogisticRegression()
+
+        # Calculate model accuracies
+        cv_scores = cross_val_score(estimator, self._common.tfidf_d, self._common.data['star_rating'], cv=cv,
+                                    scoring='accuracy').mean()
+
+        # Set the parameters by cross-validation
         print("Model accuracy predictions\n")
         print("(Score): {S:.1%}".format(S=cv_scores))
         print()
