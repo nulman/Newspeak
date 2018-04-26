@@ -1,5 +1,6 @@
 from string import punctuation
 
+import pickle
 import nltk
 import numpy as np
 from nltk.tag.perceptron import PerceptronTagger
@@ -68,11 +69,14 @@ def tokenize(text):
 #                        list(punctuation)).tolist()
 
 # Experiment #1 Only Negative and Positive words
-vocabulary = build_vocabulary()
+# vocabulary = build_vocabulary()
 
 
 # Experiment #2 Only Top 10000 frequent words
-# vocabulary = top_frequent_words_in_text()
+pkl_file = open(f'top {10000} words.pkl', 'rb')
+
+vocabulary = pickle.load(pkl_file)
+
 
 def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
     if use_idf:
@@ -89,7 +93,4 @@ def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
     return m, d
 
 
-def top_frequent_words_in_text(allWords, n):
-    stopwords = nltk.corpus.stopwords.words('english')
-    allWordExceptStopDist = nltk.FreqDist(w.lower() for w in allWords if w not in stopwords)
-    return allWordExceptStopDist.most_common(n)
+
