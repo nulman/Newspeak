@@ -8,10 +8,10 @@ import cfg
 
 class classifier(object):
 
-    def __init__(self, common):
-        self._common = common
-
-    def classify(self):
+    # def __init__(self, common):
+        # self._common = common
+    @staticmethod
+    def classify(tfidf_d, ratings, experiment='undefined'):
         # Prepare data for rating prediction
         # X_train, X_test, y_train, y_test = train_test_split(self._common.tfidf_d, self._common.data['star_rating'],
         #                                                     train_size=cfg.train_size,
@@ -22,13 +22,14 @@ class classifier(object):
         estimator = LogisticRegression()
 
         # Calculate model accuracies
-        cv_scores = cross_val_score(estimator, self._common.tfidf_d, self._common.data['star_rating'], cv=cv,
+        cv_scores = cross_val_score(estimator, tfidf_d, ratings, cv=cv,
                                     scoring='accuracy').mean()
 
         # Set the parameters by cross-validation
-        print("Model accuracy predictions\n")
+        print(f"Model accuracy predictions for {experiment}\n")
         print("(Score): {S:.1%}".format(S=cv_scores))
         print()
+        return cv_scores
 
     # def plot_results(self):
     #     # Plot the results

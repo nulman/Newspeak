@@ -42,9 +42,10 @@ def get_table_size(con: sqlite3.Connection):
 
 
 class Vectorizer(object):
-    def __init__(self, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1), ):
+    def __init__(self, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1), vocabulary_type='top', tokenize_mode='word'):
+        ctf.tokenize.mode = tokenize_mode
         self.vectorizer = TfidfVectorizer(max_df=max_df, min_df=min_df, ngram_range=ngram_range,
-                                          vocabulary=ctf.vocabulary, strip_accents='ascii', encoding='utf-8',
+                                          vocabulary=ctf.get_vocabulary(vocabulary_type), strip_accents='ascii', encoding='utf-8',
                                           tokenizer=ctf.tokenize)
 
     def fit(self, data):

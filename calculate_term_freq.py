@@ -13,9 +13,10 @@ from Truecaser import Caser
 tagger = PerceptronTagger()
 
 tokenizer = RegexpTokenizer("[\w']+")
-possible_tags = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 'NNPS',
-                 'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG',
-                 'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB']
+# possible_tags = ['CC', 'CD', 'DT', 'EX', 'FW', 'IN', 'JJ', 'JJR', 'JJS', 'LS', 'MD', 'NN', 'NNS', 'NNP', 'NNPS',
+#                  'PDT', 'POS', 'PRP', 'PRP$', 'RB', 'RBR', 'RBS', 'RP', 'SYM', 'TO', 'UH', 'VB', 'VBD', 'VBG',
+#                  'VBN', 'VBP', 'VBZ', 'WDT', 'WP', 'WP$', 'WRB']
+possible_tags = list(set(tagger.tagdict.values()))
 
 caser = None
 
@@ -45,14 +46,17 @@ def true_casing(tokens):
 
 def tokenize(text):
     global caser
-    if caser is None:
-        print('loading caser...', end='')
-        caser = Caser()
-        print('done.')
+    # if caser is None:
+    #     print('loading caser...', end='')
+        # caser = Caser()
+        # print('done.')
     sentences = nltk.sent_tokenize(text)
     tokens = []
     for sentence in sentences:
-        tokens = nltk.word_tokenize(sentence)
+        if tokenize.mode == 'word':
+            tokens.extend(nltk.word_tokenize(sentence))
+        else:
+            tokens.extend([tag[1] for tag in tagger.tag(nltk.word_tokenize(sentence))])
     #     tagged_words = nltk.pos_tag(words)
     #     ne_tagged_words = nltk.ne_chunk(tagged_words)
     # tokens = tokenizer.tokenize(text)
@@ -62,6 +66,7 @@ def tokenize(text):
     # return [stemmer.stem(t) for t in tokens]
     return [t for t in tokens]
     # return ['_'.join([token, cased[1]]) for token, cased in zip(tokens, cased_token)]
+tokenize.mode = 'word'
 
 
 # Neg\Pos + Function words + Punctuation
@@ -73,9 +78,19 @@ def tokenize(text):
 
 
 # Experiment #2 Only Top 10000 frequent words
-pkl_file = open(f'top {10000} words.pkl', 'rb')
 
-vocabulary = pickle.load(pkl_file)
+
+def get_vocabulary(variant='top'):
+    if variant.lower() == 'sentiment':
+        # print('build_vocabulary')
+        return build_vocabulary()
+    elif variant.lower() == 'top':
+        # print(f'top {10000} words.pkl')
+        with open(f'top {10000} words.pkl', 'rb') as pkl_file:
+            return pickle.load(pkl_file)
+    elif variant.lower() == 'pos':
+        # print('possible_tags')
+        return possible_tags
 
 
 def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
