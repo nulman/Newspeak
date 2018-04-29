@@ -46,17 +46,17 @@ def true_casing(tokens):
 
 def tokenize(text):
     global caser
-    # if caser is None:
-    #     print('loading caser...', end='')
-        # caser = Caser()
-        # print('done.')
+    if caser is None and tokenize.mode == 'pos':
+        print('loading caser...', end='')
+        caser = Caser()
+        print('done.')
     sentences = nltk.sent_tokenize(text)
     tokens = []
     for sentence in sentences:
         if tokenize.mode == 'word':
             tokens.extend(nltk.word_tokenize(sentence))
         else:
-            tokens.extend([tag[1] for tag in tagger.tag(nltk.word_tokenize(sentence))])
+            tokens.extend([tag[1] for tag in tagger.tag(caser.getTrueCase(nltk.word_tokenize(sentence)))])
     #     tagged_words = nltk.pos_tag(words)
     #     ne_tagged_words = nltk.ne_chunk(tagged_words)
     # tokens = tokenizer.tokenize(text)
