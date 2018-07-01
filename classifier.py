@@ -1,7 +1,7 @@
-from sklearn.model_selection import train_test_split
+import numpy as np
 from sklearn.model_selection import ShuffleSplit
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_score, train_test_split
 
 import cfg
 
@@ -30,6 +30,28 @@ class classifier(object):
         print("(Score): {S:.1%}".format(S=cv_scores))
         print()
         return cv_scores
+
+    @staticmethod
+    def get_estimator():
+        estimator = LogisticRegression(solver='lbfgs', random_state=42,
+                                       multi_class='multinomial',
+                                       class_weight='balanced')
+        return estimator
+
+    @classmethod
+    def run_experiment(cls, X_train, X_test, Y_train , Y_test, experiment, classifier=None):
+        if classifier is None:
+            classifier = cls.get_estimator()
+        # if not Y_train
+        classifier.fit(X_train, Y_train)
+        predictions = classifier.predict(X_test)
+        Y_test = np.array(Y_test, dtype=np.int64)
+        print(f"Model accuracy predictions for {experiment}\n")
+        print("(Score): {S:.1%}".format(S=(sum(Y_test == predictions) / len(Y_test))))
+        print('\n\n')
+        return predictions
+
+
 
     # def plot_results(self):
     #     # Plot the results

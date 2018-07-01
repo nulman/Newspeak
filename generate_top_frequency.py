@@ -34,8 +34,11 @@ def top_frequent_words_in_text(database_path, n=None):
     stop_words = nltk.corpus.stopwords.words('english')
     stop_words = dict(zip(stop_words, range(len(stop_words))))
     for row in res:
-        for word in (word.lower() for word in nltk.word_tokenize(row[0]) if word not in stop_words and word.isalpha()):
-            words[word]+=1
+        try:
+            for word in (word.lower() for word in nltk.word_tokenize(row[0]) if word not in stop_words and word.isalpha()):
+                words[word]+=1
+        except:
+            continue
     #here we remove any other words we dont want
     # for i in '!/><;&()#:-':
     #     del words[i]
@@ -47,9 +50,9 @@ def top_frequent_words_in_text(database_path, n=None):
 
 
 if __name__ == '__main__':
-    top_words = top_frequent_words_in_text(r'data\\amazon_reviews_us_Watches_v1_00.db', 10000)
+    top_words = top_frequent_words_in_text(r'data\\amazon_reviews_us_Books_v1_00.db', 10000)
     top_words = [a for a, b in top_words]
 
-    output = open(f'top {10000} words.pkl', 'wb')
+    output = open(f'top {10000} words books.pkl', 'wb')
     pickle.dump(top_words, output)
     output.close()
