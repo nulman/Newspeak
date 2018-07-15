@@ -9,6 +9,17 @@ This project is part of an NLP Lab course and its purpose:
 3.	Try several features sets to achieve better model accuracy
 4.	Understand the challenges in NLP sentiment analysis
 
+# Prerequisite 
+
+1. python 3.6
+2. sqlite3
+3. csv
+4. nltk
+5. scikit-learn
+6. matplotlib
+7. numpy
+8. pickle
+
 # Generate SQL DB
 
 We use SQLLite for our DBs, in order to create a new database from a TSV file, please run the following command:
