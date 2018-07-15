@@ -78,26 +78,11 @@ def tokenize(text):
             tokens.extend(casing_tokenizer(sentence))
         elif tokenize.mode == 'count':
             return [str(len(nltk.word_tokenize(sentence)))]
-    #     tagged_words = nltk.pos_tag(words)
-    #     ne_tagged_words = nltk.ne_chunk(tagged_words)
-    # tokens = tokenizer.tokenize(text)
-    # cased_token = caser.getTrueCase(tokens)
-    # cased_token = tagger.tag(cased_token)
-    # cased_token = pos_tag(cased_token)
-    # return [stemmer.stem(t) for t in tokens]
+
     return [t for t in tokens]
-    # return ['_'.join([token, cased[1]]) for token, cased in zip(tokens, cased_token)]
 tokenize.mode = 'word'
 
-# Neg\Pos + Function words + Punctuation
-# vocabulary = np.unique(build_vocabulary() + cfg.FUNCTION_WORDS  +
-#                        list(punctuation)).tolist()
 
-# Experiment #1 Only Negative and Positive words
-# vocabulary = build_vocabulary()
-
-
-# Experiment #2 Only Top 10000 frequent words
 
 
 def get_vocabulary(variant='top'):
@@ -126,8 +111,6 @@ def get_tf(data, use_idf, max_df=1.0, min_df=1, ngram_range=(1, 1)):
         m = CountVectorizer(max_df=max_df, min_df=min_df, stop_words='english', ngram_range=ngram_range,
                             tokenizer=tokenize)
 
-    # data = data.values.astype('str')
-    # data = np.core.defchararray.replace(data, '#$%', ' ')
     d = m.fit_transform(data)
     return m, d
 

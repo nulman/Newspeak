@@ -21,31 +21,16 @@ def chunks(l, n=10000):
 def get_connection(path):
     return sqlite3.connect(path)
 
-
-# chunk_query = r"select review_headline, review_body, star_rating from data where i >= {} and <= {};"
-# chunk_query = r'select (review_body || " " || review_headline) as text, ' \
-#               r'star_rating from data where i BETWEEN  {} and {} order by i;'
-
-# ugly prototype to get evenly distributed ratings
-# chunk_query = '''select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 1 limit 1000)
-# union
-# select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 2 limit 1000)
-# union
-# select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 3 limit 1000)
-# union
-# select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 4 limit 1000)
-# union
-# select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 5 limit 1000)'''
-
-chunk_query = '''select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 1 and LENGTH (text) > 45 limit 48000 )
+def chunk_query(n):
+    return '''select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 1 and LENGTH (text) > 45 limit {0} )
 union all
-select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 2 and LENGTH(text) > 45 limit 48000 )
+select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 2 and LENGTH(text) > 45 limit {0} )
 union all
-select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 3 and LENGTH(text) > 45 limit 48000 )
+select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 3 and LENGTH(text) > 45 limit {0} )
 union all
-select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 4 and LENGTH(text) > 45 limit 48000 )
+select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 4 and LENGTH(text) > 45 limit {0} )
 union all
-select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 5 and LENGTH(text) > 45 limit 48000 )'''
+select * from (select (review_body || " " || review_headline) as text, star_rating, customer_id from data where star_rating = 5 and LENGTH(text) > 45 limit {0} )'''.format(n)
 
 def get_table_size(con: sqlite3.Connection):
     curr = con.cursor()
