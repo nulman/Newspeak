@@ -1,10 +1,12 @@
 
 
 import csv, sqlite3
+import argparse
+import os
 
 def tsv_to_sql(path, chunk_size=10000):
     # con = sqlite3.connect(r"data\amazon_reviews_us_Watches_v1_00.db")
-    con = sqlite3.connect(path.replace('.tsv', '.db'))
+    con = sqlite3.connect(os.path.join('data', os.path.basename(path).replace('.tsv', '.db')))
     cur = con.cursor()
     try:
         cur.execute("CREATE TABLE data (i int,marketplace,customer_id int,review_id,product_id,product_parent int,"
@@ -21,7 +23,7 @@ def tsv_to_sql(path, chunk_size=10000):
             "review_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 
 
-    with open(path, encoding="utf8") as fin: # `with` statement available in 2.5+
+    with open(path, encoding="utf8") as fin:
         # csv.DictReader uses first line in file for column headings by default
         dr = csv.DictReader(fin, delimiter="\t") # comma is default delimiter
         l = []
@@ -46,4 +48,8 @@ def tsv_to_sql(path, chunk_size=10000):
     con.close()
 
 if __name__ == '__main__':
-    tsv_to_sql(r'data\amazon_reviews_us_Watches_v1_00.tsv')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('path', help='Path to tsv file')
+
+    args = parser.parse_args()
+    tsv_to_sql(args.path)

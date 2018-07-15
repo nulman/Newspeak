@@ -438,7 +438,7 @@ n_terms = 12
 
 max_df = 0.90
 
-min_df = 10
+min_df = 4
 
 ngram_range = (1, 3)
 
