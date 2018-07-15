@@ -9,7 +9,7 @@ This project is part of an NLP Lab course and its purpose:
 3.	Try several features sets to achieve better model accuracy
 4.	Understand the challenges in NLP sentiment analysis
 
-# Prerequisite 
+# Prerequisites
 
 1. python 3.6
 2. sqlite3
