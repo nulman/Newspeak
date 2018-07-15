@@ -19,6 +19,7 @@ This project is part of an NLP Lab course and its purpose:
 6. matplotlib
 7. numpy
 8. pickle
+9. true casing is based on [truecaser data](https://github.com/nreimers/truecaser/releases/download/v1.0/english_distributions.obj.zip)
 
 # Generate SQL DB
 
